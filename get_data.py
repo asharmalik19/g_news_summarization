@@ -4,6 +4,17 @@ from playwright.sync_api import TimeoutError
 import re
 from newspaper import Article
 from curl_cffi.requests import AsyncSession
+import asyncio
+import pandas as pd
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    filename='data_extraction.log',
+    filemode='w',
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+)
 
 def get_links_from_feed(url):
     d = feedparser.parse(url)
@@ -12,7 +23,7 @@ def get_links_from_feed(url):
         links.append(entry.link)
     return links
     
-def get_redirected_links(links):
+def get_redirected_links(rss_links):
     rss_prefix = r'https://news\.google\.com/rss/articles/'
     pattern = re.compile(rf'^(?!{rss_prefix}).+')
 
@@ -21,46 +32,53 @@ def get_redirected_links(links):
         browser = chromium.launch(headless=True)
         page = browser.new_page()
         redirected_links = []
-        for link in links:
-            page.goto(link)
+        for link in rss_links:
             try: 
+                page.goto(link)
                 redirected_link = page.wait_for_url(pattern, timeout=10000)
                 redirected_links.append(page.url)
             except TimeoutError:
-                print(f'TimeoutError: {link}')
+                logging.warning(f'Timeout error for link: {link}')
+            except Exception as e:
+                logging.error(f'Error for link: {link}, Error: {e}')
         browser.close()
     return redirected_links
 
-async def gather_responses(links):
+async def get_responses(links):
    async with AsyncSession() as session:
         tasks = []
         for link in links:
             tasks.append(session.get(link, impersonate='chrome'))
-        responses = await asyncio.gather(*tasks)
-        link_response_pairs = [(link, response) for link, response in zip(links, responses) if response.status_code == 200]
-        return link_response_pairs
+        responses = await asyncio.gather(*tasks)      
+        valid_responses = [response for response in responses if response.status_code == 200] 
+        return valid_responses
 
 async def get_articles(links):
-    link_response_pairs = await gather_responses(links)
+    responses = await get_responses(links)
     articles = []
-    for link, response in link_response_pairs:
+    for response in responses:
         html = response.text
-        article = Article(link)
+        article = Article(response.url)
         article.set_html(html)
         article.parse()
-        articles.append(article.text)
+        articles.append({
+            'title': article.title,
+            'text': article.text,
+            'url': response.url
+        })
     return articles
 
 if __name__ == '__main__':
     feed_url = 'https://news.google.com/rss/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRGRqTVhZU0JXVnVMVWRDR2dKUVN5Z0FQAQ?hl=en-PK&gl=PK&ceid=PK:en'
-    links = get_links_from_feed(feed_url)[:10]
+    links = get_links_from_feed(feed_url)
     print(f'feed links: {links}')
     final_links = get_redirected_links(links)
     print(f'final links: {final_links}')
-    articles = await get_articles(final_links)
-    for article in articles:
-        print(article)
-        print('---'*20)
+    articles = asyncio.run(get_articles(final_links))
+    print(f'articles: {articles}')
+    pd.DataFrame(articles).to_csv('articles.csv', index=False)
+
+    
 
 
     
