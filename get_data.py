@@ -5,7 +5,6 @@ import re
 from newspaper import Article
 from curl_cffi.requests import AsyncSession
 import asyncio
-import pandas as pd
 import logging
 import sqlite3
 
@@ -36,7 +35,7 @@ def get_redirected_links(rss_links):
         for link in rss_links:
             try: 
                 page.goto(link)
-                redirected_link = page.wait_for_url(pattern, timeout=10000)
+                page.wait_for_url(pattern, timeout=10000)
                 redirected_links.append(page.url)
             except TimeoutError:
                 logging.warning(f'Timeout error for link: {link}')
@@ -84,7 +83,7 @@ def store_articles_in_db(articles):
 if __name__ == '__main__':
     CATEGORY = 'Technology'
     feed_url = 'https://news.google.com/rss/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRGRqTVhZU0JXVnVMVWRDR2dKUVN5Z0FQAQ?hl=en-PK&gl=PK&ceid=PK:en'
-    links = get_links_from_feed(feed_url)[:5]
+    links = get_links_from_feed(feed_url)
     print(f'feed links: {links}')
     final_links = get_redirected_links(links)
     print(f'final links: {final_links}')
