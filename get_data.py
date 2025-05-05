@@ -7,6 +7,7 @@ from curl_cffi.requests import AsyncSession
 import asyncio
 import pandas as pd
 import logging
+import sqlite3
 
 logging.basicConfig(
     level=logging.INFO,
@@ -53,7 +54,7 @@ async def get_responses(links):
         valid_responses = [response for response in responses if response.status_code == 200] 
         return valid_responses
 
-async def get_articles(links):
+async def get_articles(links, category):
     responses = await get_responses(links)
     articles = []
     for response in responses:
@@ -64,22 +65,32 @@ async def get_articles(links):
         articles.append({
             'title': article.title,
             'text': article.text,
-            'url': response.url
+            'url': response.url,
+            'category': category
         })
     return articles
+
+def store_articles_in_db(articles):
+    con = sqlite3.connect('articles_data.db')
+    cur = con.cursor()
+    cur.execute("DROP TABLE IF EXISTS article")
+    cur.execute("CREATE TABLE article(title, text, url, category)")
+
+    for article in articles:
+        cur.execute("INSERT INTO article VALUES (?, ?, ?, ?)", (article['title'], article['text'], article['url'], article['category']))
+    con.commit()
+    con.close()
 
 if __name__ == '__main__':
     CATEGORY = 'Technology'
     feed_url = 'https://news.google.com/rss/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRGRqTVhZU0JXVnVMVWRDR2dKUVN5Z0FQAQ?hl=en-PK&gl=PK&ceid=PK:en'
-    links = get_links_from_feed(feed_url)
+    links = get_links_from_feed(feed_url)[:5]
     print(f'feed links: {links}')
     final_links = get_redirected_links(links)
     print(f'final links: {final_links}')
-    articles = asyncio.run(get_articles(final_links))
+    articles = asyncio.run(get_articles(final_links, CATEGORY))
     print(f'articles: {articles}')
-    df = pd.DataFrame(articles)
-    df['category'] = CATEGORY
-    df.to_csv('articles.csv', index=False)
+    store_articles_in_db(articles)
 
     
 
