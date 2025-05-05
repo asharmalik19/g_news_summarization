@@ -69,6 +69,7 @@ async def get_articles(links):
     return articles
 
 if __name__ == '__main__':
+    CATEGORY = 'Technology'
     feed_url = 'https://news.google.com/rss/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRGRqTVhZU0JXVnVMVWRDR2dKUVN5Z0FQAQ?hl=en-PK&gl=PK&ceid=PK:en'
     links = get_links_from_feed(feed_url)
     print(f'feed links: {links}')
@@ -76,9 +77,10 @@ if __name__ == '__main__':
     print(f'final links: {final_links}')
     articles = asyncio.run(get_articles(final_links))
     print(f'articles: {articles}')
-    pd.DataFrame(articles).to_csv('articles.csv', index=False)
+    df = pd.DataFrame(articles)
+    df['category'] = CATEGORY
+    df.to_csv('articles.csv', index=False)
 
     
 
 
-    
