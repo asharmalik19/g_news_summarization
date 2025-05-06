@@ -7,6 +7,7 @@ from curl_cffi.requests import AsyncSession
 import asyncio
 import logging
 import sqlite3
+import pandas as pd
 
 logging.basicConfig(
     level=logging.INFO,
@@ -53,7 +54,7 @@ async def get_responses(links):
         valid_responses = [response for response in responses if response.status_code == 200] 
         return valid_responses
 
-async def get_articles(links, category):
+async def get_articles(links):
     responses = await get_responses(links)
     articles = []
     for response in responses:
@@ -64,21 +65,9 @@ async def get_articles(links, category):
         articles.append({
             'title': article.title,
             'text': article.text,
-            'url': response.url,
-            'category': category
+            'url': response.url
         })
     return articles
-
-def store_articles_in_db(articles):
-    con = sqlite3.connect('articles_data.db')
-    cur = con.cursor()
-    cur.execute("DROP TABLE IF EXISTS article")
-    cur.execute("CREATE TABLE article(title, text, url, category)")
-
-    for article in articles:
-        cur.execute("INSERT INTO article VALUES (?, ?, ?, ?)", (article['title'], article['text'], article['url'], article['category']))
-    con.commit()
-    con.close()
 
 if __name__ == '__main__':
     CATEGORY = 'Technology'
@@ -87,9 +76,12 @@ if __name__ == '__main__':
     print(f'feed links: {links}')
     final_links = get_redirected_links(links)
     print(f'final links: {final_links}')
-    articles = asyncio.run(get_articles(final_links, CATEGORY))
+    articles = asyncio.run(get_articles(final_links))
     print(f'articles: {articles}')
-    store_articles_in_db(articles)
+    df = pd.DataFrame(articles)
+    df['category'] = CATEGORY
+    df.to_csv('articles.csv', index=False)
+
 
     
 
