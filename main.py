@@ -1,25 +1,30 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 import sqlite3
+from fastapi.responses import FileResponse
+import json
 
 app = FastAPI(title="Google news Summary API",)
 
-@app.get("/")
-def read_item():
-    return {
-        "summary": "This is a summary of the API.",
-        "description": "This API provides endpoints for various functionalities.",
-        "version": "1.0.0",
-        "author": "Ashar Khan"
-    }
+app.mount("/static", StaticFiles(directory="static", html=True), name="static")
 
-@app.get("/summary")
-def read_articles():
-    with sqlite3.connect('articles_data.db') as con:
+@app.get("/")
+async def read_index():
+    return FileResponse('static/index.html')
+    
+@app.get("/summaries")
+def read_summaries():
+    with sqlite3.connect('./articles_data.db') as con:
+        con.row_factory = sqlite3.Row
         cur = con.cursor()
-        all_summaries = cur.execute("SELECT summary FROM article").fetchall()
-        return {
-            "summaries": [row[0] for row in all_summaries]
-        }
+        rows = cur.execute("SELECT title, summary, url FROM article").fetchall()
+        articles = [dict(row) for row in rows]
+        return {'articles': articles}
+
+
+
+
+
 
 
 

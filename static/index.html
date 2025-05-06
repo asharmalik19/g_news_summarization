@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google News Summaries</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        h1 {
+            color: #2c3e50;
+        }
+        
+        .articles-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .article-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .article-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .article-summary {
+            margin-bottom: 15px;
+            color: #555;
+        }
+        
+        .article-link {
+            display: inline-block;
+            text-decoration: none;
+            color: #3498db;
+            font-weight: 500;
+        }
+        
+        .article-link:hover {
+            text-decoration: underline;
+        }
+        
+        .loading {
+            text-align: center;
+            font-size: 18px;
+            margin: 50px 0;
+        }
+        
+        .error {
+            text-align: center;
+            color: #e74c3c;
+            font-size: 18px;
+            margin: 50px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .articles-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Google News Summaries</h1>
+        <p>AI-generated summaries of the latest news articles</p>
+    </header>
+    
+    <main>
+        <div id="loading" class="loading">Loading summaries...</div>
+        <div id="error" class="error" style="display: none;"></div>
+        <div id="articles" class="articles-container"></div>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const articlesContainer = document.getElementById('articles');
+            const loadingElement = document.getElementById('loading');
+            const errorElement = document.getElementById('error');
+            
+            // Fetch summaries from the API
+            fetch('/summaries')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch summaries');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    loadingElement.style.display = 'none';
+                    
+                    if (!data.articles || data.articles.length === 0) {
+                        errorElement.textContent = 'No articles found.';
+                        errorElement.style.display = 'block';
+                        return;
+                    }
+                    
+                    // Create article cards
+                    data.articles.forEach(article => {
+                        const articleCard = document.createElement('div');
+                        articleCard.className = 'article-card';
+                        
+                        const title = document.createElement('div');
+                        title.className = 'article-title';
+                        title.textContent = article.title;
+                        
+                        const summary = document.createElement('div');
+                        summary.className = 'article-summary';
+                        summary.textContent = article.summary;
+                        
+                        const link = document.createElement('a');
+                        link.className = 'article-link';
+                        link.href = article.url;
+                        link.textContent = 'Read full article';
+                        link.target = '_blank';
+                        
+                        articleCard.appendChild(title);
+                        articleCard.appendChild(summary);
+                        articleCard.appendChild(link);
+                        
+                        articlesContainer.appendChild(articleCard);
+                    });
+                })
+                .catch(error => {
+                    loadingElement.style.display = 'none';
+                    errorElement.textContent = `Error: ${error.message}`;
+                    errorElement.style.display = 'block';
+                    console.error('Error fetching summaries:', error);
+                });
+        });
+    </script>
+</body>
+</html>

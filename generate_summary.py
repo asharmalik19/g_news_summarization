@@ -2,22 +2,29 @@ from google import genai
 import os
 import sqlite3
 import pandas as pd
+import json
 
 def generate_summary(article, client):
     prompt = f"""
-    You are a professional news summarizer.
-    Read the article below and produce a concise, three-bullet summary that captures its key facts, main events, and core takeaways. Nothing else.
+    You are a professional news‑summarizer.
+    Read the article below and output ONLY valid JSON with one key, "summary", whose value is a single string.
+    That string should contain three short key points, separated by newline characters.
 
+    Article:
     {article}
 
-    Summary:
-    • """
+    Example output:
+    {{
+    "summary": "Point 1..\\n\\npoint 2..\\n\\npoint 3.."
+    }}
+    """
 
     response = client.models.generate_content(
         model="gemini-2.0-flash-lite",
         contents=prompt
     )
-    return response.text
+    raw = response.text.strip()
+    return raw
 
 def store_articles_in_db(articles_df):
     with sqlite3.connect('articles_data.db') as con:
@@ -34,7 +41,7 @@ if __name__ == '__main__':
         summary = generate_summary(article_with_title, client)
         df.loc[i, 'summary'] = summary
         print(summary)
-    
+ 
     store_articles_in_db(df)
 
         

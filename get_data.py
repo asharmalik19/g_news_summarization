@@ -6,7 +6,6 @@ from newspaper import Article
 from curl_cffi.requests import AsyncSession
 import asyncio
 import logging
-import sqlite3
 import pandas as pd
 
 logging.basicConfig(
