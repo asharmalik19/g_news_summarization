@@ -30,10 +30,11 @@ def get_redirected_links(rss_links):
     with sync_playwright() as playwright:
         chromium = playwright.chromium 
         browser = chromium.launch(headless=True)
-        page = browser.new_page()
+        
         redirected_links = []
         for link in rss_links:
             try: 
+                page = browser.new_page()
                 page.goto(link)
                 page.wait_for_url(pattern, timeout=10000)
                 redirected_links.append(page.url)
@@ -41,6 +42,7 @@ def get_redirected_links(rss_links):
                 logging.warning(f'Timeout error for link: {link}')
             except Exception as e:
                 logging.error(f'Error for link: {link}, Error: {e}')
+            page.close()
         browser.close()
     return redirected_links
 
@@ -48,7 +50,7 @@ async def get_responses(links):
    async with AsyncSession() as session:
         tasks = []
         for link in links:
-            tasks.append(session.get(link, impersonate='chrome'))
+            tasks.append(session.get(link, impersonate='chrome', verify=False))
         responses = await asyncio.gather(*tasks)      
         valid_responses = [response for response in responses if response.status_code == 200] 
         return valid_responses
@@ -69,17 +71,23 @@ async def get_articles(links):
     return articles
 
 if __name__ == '__main__':
-    CATEGORY = 'Technology'
-    feed_url = 'https://news.google.com/rss/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRGRqTVhZU0JXVnVMVWRDR2dKUVN5Z0FQAQ?hl=en-PK&gl=PK&ceid=PK:en'
-    links = get_links_from_feed(feed_url)
-    print(f'feed links: {links}')
-    final_links = get_redirected_links(links)
-    print(f'final links: {final_links}')
-    articles = asyncio.run(get_articles(final_links))
-    print(f'articles: {articles}')
-    df = pd.DataFrame(articles)
-    df['category'] = CATEGORY
-    df.to_csv('articles.csv', index=False)
+    categories_and_feed_urls = {
+        'Technology': 'https://news.google.com/rss/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRGRqTVhZU0JXVnVMVWRDR2dKUVN5Z0FQAQ?hl=en-PK&gl=PK&ceid=PK:en',
+        'Business': 'https://news.google.com/rss/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRGx6TVdZU0JXVnVMVWRDR2dKUVN5Z0FQAQ?hl=en-PK&gl=PK&ceid=PK:en',
+        'World': 'https://news.google.com/rss/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRGx1YlY4U0JXVnVMVWRDR2dKUVN5Z0FQAQ?hl=en-PK&gl=PK&ceid=PK:en'
+    }
+    data = []
+    for category, feed_url in categories_and_feed_urls.items():
+        links = get_links_from_feed(feed_url)
+        print(f'feed links: {links}')
+        redirected_links = get_redirected_links(links)
+        print(f'redirected links: {redirected_links}')
+        articles = asyncio.run(get_articles(redirected_links))
+        df = pd.DataFrame(articles)
+        df['category'] = category
+        data.append(df)
+    data_final = pd.concat(data, ignore_index=True)
+    data_final.to_csv('articles.csv', index=False)
 
 
     
