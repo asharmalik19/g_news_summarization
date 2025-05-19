@@ -87,6 +87,8 @@ if __name__ == '__main__':
         df['category'] = category
         data.append(df)
     data_final = pd.concat(data, ignore_index=True)
+    data_final.dropna(subset=['text'], inplace=True)
+    data_final['text'] = data_final['text'].apply(lambda x: x.strip())
     data_final.to_csv('articles.csv', index=False)
 
 

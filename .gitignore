@@ -1,2 +1,6 @@
 venv/
 extra.py
+__pycache__/
+*.log
+*.csv
+*.db
