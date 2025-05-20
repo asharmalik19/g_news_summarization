@@ -19,6 +19,16 @@ def read_summaries():
         rows = cur.execute("SELECT title, summary, url FROM article").fetchall()
         articles = [dict(row) for row in rows]
         return {'articles': articles}
+    
+@app.get("/summaries/{category}")
+def read_summaries_by_category(category):
+    with sqlite3.connect('./articles_data.db') as con:
+        con.row_factory = sqlite3.Row
+        cur = con.cursor()
+        rows = cur.execute("SELECT title, summary, url FROM article WHERE Category = ?", (category, )).fetchall()
+        articles = [dict(row) for row in rows]
+        return {'articles': articles}
+
 
 
 

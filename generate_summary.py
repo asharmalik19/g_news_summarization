@@ -47,7 +47,7 @@ if __name__ == '__main__':
         summary = generate_summary(article_with_title, client)
         df.loc[i, 'summary'] = summary
         print(summary)
- 
+        
     store_articles_in_db(df)
 
         
