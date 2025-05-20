@@ -26,6 +26,32 @@
             color: #2c3e50;
         }
         
+        .category-selector {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .category-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .category-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .category-btn.active {
+            background-color: #2c3e50;
+        }
+        
         .articles-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -81,6 +107,13 @@
             margin: 50px 0;
         }
         
+        .current-category {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #2c3e50;
+        }
+        
         @media (max-width: 768px) {
             .articles-container {
                 grid-template-columns: 1fr;
@@ -90,11 +123,20 @@
 </head>
 <body>
     <header>
-        <h1>Google News Summaries</h1>
+        <h1>Google News Summarizer</h1>
         <p>AI-generated summaries of the latest news articles</p>
     </header>
     
     <main>
+        <div class="category-selector">          
+            <button class="category-btn active" data-category="all">All News</button>
+            <button class="category-btn" data-category="Technology">Technology</button>
+            <button class="category-btn" data-category="Business">Business</button>
+            <button class="category-btn" data-category="World">World</button>             
+        </div>
+        
+        <div id="current-category" class="current-category">Showing: All News</div>
+        
         <div id="loading" class="loading">Loading summaries...</div>
         <div id="error" class="error" style="display: none;"></div>
         <div id="articles" class="articles-container"></div>
@@ -105,56 +147,94 @@
             const articlesContainer = document.getElementById('articles');
             const loadingElement = document.getElementById('loading');
             const errorElement = document.getElementById('error');
+            const currentCategoryElement = document.getElementById('current-category');
+            const categoryButtons = document.querySelectorAll('.category-btn');
             
-            // Fetch summaries from the API
-            fetch('/summaries')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch summaries');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    loadingElement.style.display = 'none';
+            // Set initial category
+            let currentCategory = 'all';
+            
+            // Add event listeners to category buttons
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Update active button
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
                     
-                    if (!data.articles || data.articles.length === 0) {
-                        errorElement.textContent = 'No articles found.';
-                        errorElement.style.display = 'block';
-                        return;
-                    }
+                    // Get selected category
+                    const category = button.getAttribute('data-category');
+                    currentCategory = category;
                     
-                    // Create article cards
-                    data.articles.forEach(article => {
-                        const articleCard = document.createElement('div');
-                        articleCard.className = 'article-card';
-                        
-                        const title = document.createElement('div');
-                        title.className = 'article-title';
-                        title.textContent = article.title;
-                        
-                        const summary = document.createElement('div');
-                        summary.className = 'article-summary';
-                        summary.textContent = article.summary;
-                        
-                        const link = document.createElement('a');
-                        link.className = 'article-link';
-                        link.href = article.url;
-                        link.textContent = 'Read full article';
-                        link.target = '_blank';
-                        
-                        articleCard.appendChild(title);
-                        articleCard.appendChild(summary);
-                        articleCard.appendChild(link);
-                        
-                        articlesContainer.appendChild(articleCard);
-                    });
-                })
-                .catch(error => {
-                    loadingElement.style.display = 'none';
-                    errorElement.textContent = `Error: ${error.message}`;
-                    errorElement.style.display = 'block';
-                    console.error('Error fetching summaries:', error);
+                    // Update display
+                    currentCategoryElement.textContent = `Showing: ${category === 'all' ? 'All News' : category}`;
+                    
+                    // Clear articles
+                    articlesContainer.innerHTML = '';
+                    
+                    // Show loading
+                    loadingElement.style.display = 'block';
+                    errorElement.style.display = 'none';
+                    
+                    // Fetch articles for the selected category
+                    fetchArticles(category);
                 });
+            });
+            
+            // Function to fetch articles
+            function fetchArticles(category) {
+                const url = category === 'all' ? '/summaries' : `/summaries/${category}`;
+                
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch summaries');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        loadingElement.style.display = 'none';
+                        
+                        if (!data.articles || data.articles.length === 0) {
+                            errorElement.textContent = 'No articles found for this category.';
+                            errorElement.style.display = 'block';
+                            return;
+                        }
+                        
+                        // Create article cards
+                        data.articles.forEach(article => {
+                            const articleCard = document.createElement('div');
+                            articleCard.className = 'article-card';
+                            
+                            const title = document.createElement('div');
+                            title.className = 'article-title';
+                            title.textContent = article.title;
+                            
+                            const summary = document.createElement('div');
+                            summary.className = 'article-summary';
+                            summary.textContent = article.summary;
+                            
+                            const link = document.createElement('a');
+                            link.className = 'article-link';
+                            link.href = article.url;
+                            link.textContent = 'Read full article';
+                            link.target = '_blank';
+                            
+                            articleCard.appendChild(title);
+                            articleCard.appendChild(summary);
+                            articleCard.appendChild(link);
+                            
+                            articlesContainer.appendChild(articleCard);
+                        });
+                    })
+                    .catch(error => {
+                        loadingElement.style.display = 'none';
+                        errorElement.textContent = `Error: ${error.message}`;
+                        errorElement.style.display = 'block';
+                        console.error('Error fetching summaries:', error);
+                    });
+            }
+            
+            // Initial fetch for all articles
+            fetchArticles(currentCategory);
         });
     </script>
 </body>
