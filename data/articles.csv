@@ -1,0 +1,55 @@
+title,text,url,category
+Samsung Galaxy Tab S6 Lite 2024 getting One UI 7 (Android 15) goodness,"Samsung has started rolling out an Android 15-based One UI 7 update for the Galaxy Tab S6 Lite 2024 update. This major update takes your Galaxy Tab to the next level with a revamped UI and new features.
+
+One UI 7 update for Samsung Galaxy Tab S6 Lite is currently available for users in Korea, and the company will expand it soon. Users can identify the latest update through One UI build version P620XXU5BYE5 and an installation package size of around 3 GB.
+
+One UI 7 includes many much-awaited changes, including a vertical scrolling app drawer, redesigned icons, better widget customization options, larger home screen folders, and a new user interface. It also brings new designs for various apps, which further improve the overall look and feel of the system.
+
+Moreover, it updates several apps to the latest available version. Notably, the update installs the May 2025 security patch to improve system security and stability.
+
+To install the update, open the tab’s Settings, select ‘Software Update’, and then ‘Download and install’. Following these steps will ensure that your Galaxy Tab is up-to-date with the latest security protections and features.
+
+After the One UI 7 update, several Galaxy Tab users started facing issues on the home screen. These issues happen when the home screen layout is set to a vertical grid, like a 5×7 layout, and you have widgets that take up a lot of space, like 3×7 widgets. Make sure your Galaxy Tab’s home screen is not set up like this ahead of the installation of One UI 7.
+
+Advertisement
+
+Thanks for the tip! Alfaturk",https://www.sammyfans.com/2025/05/22/samsung-galaxy-tab-s6-lite-2024-getting-one-ui-7-android-15-goodness/,Technology
+Azure Logic Apps Introduces 'Agent Loop' for Building AI Agents in Enterprise Workflows,"At the annual Build conference, Microsoft announced agent loop, a new capability within Azure Logic Apps that allows developers to build AI agents directly into their enterprise workflows.
+
+Agent loop is a central component for AI Agent development within Logic Apps. It is a new action type integrating a chosen AI model (like Azure OpenAI), domain-specific tools (via Logic Apps connectors), and enterprise knowledge sources. With the component, developers can create various types of AI agents, including autonomous agents for tasks like loan approvals, conversational agents for customer support, and multi-agent systems for coordinated activities such as sales report generation.
+
+(Source: Microsoft Tech community blog post)
+
+Built upon the kernel object in the Semantic Kernel, the agent loop leverages an LLM to determine the necessary steps. At the same time, the Azure Logic Apps runtime handles the execution of these plans. This approach offers significant flexibility, allowing for the creation of both conversational and fully autonomous agents that can respond to real-time events via Logic Apps' extensive library of connectors.
+
+Divya Swarnkar, a program manager at Microsoft, told InfoQ :
+
+With over 1,400 connectors, Logic Apps is uniquely positioned to power AI Agents with rich context and seamless access to enterprise systems and APIs, enabling them to reason and act reliably.
+
+Agent loop operates through an iterative ""Think, Act, and Learn cycle."" The AI agent reasons about its goal and context, takes action by invoking connectors, and then reflects on the results to adjust its plan if needed. Azure Logic Apps manages this cycle automatically.
+
+Microsoft highlights several potential use cases for AI Agents built with agent loop, including:
+
+Product Return Agent: Verifying order details, return eligibility, and processing refunds or requesting further information.
+
+Loan Approval Agent: Evaluating credit scores, income, and risk profiles to auto-approve or route applications.
+
+Recruiting Agent: Screening resumes, summarizing qualifications, and drafting personalized outreach.
+
+Sales Report Generation Workflow: Utilizing multiple agents for drafting, reviewing, and publishing reports.
+
+IT Operations Agent: Triaging alerts, checking changes, and resolving common issues or escalating when necessary.
+
+Multi-Agent Retail Supply Chain Solution: Coordinating inventory and logistics agents for timely restocks and optimized fulfillment.
+
+Furthermore, the key benefits of building AI Agents in Logic Apps with agent loop include declarative orchestration, code extensibility, access to a vast library of integrated tools, observability with full traceability of agent decisions, enterprise-grade governance inheriting the security and compliance of Azure Logic Apps, straightforward human-in-the-loop and multi-agent coordination, and faster time to value by abstracting away the boilerplate of agent architecture.
+
+Kent Weare, a Principal Program Manager for Logic Apps at Microsoft, states:
+
+Building agents or workflows isn’t a binary choice. The most effective solutions often combine both — and that’s where Logic Apps excels. With Agent Loop, customers have full control to dial up the level of agentic automation that fits their needs. Logic Apps is where traditional workflows and AI agents come together, combining forces to solve complex business problems — all within a trusted, enterprise-grade platform. I don’t think any other platform offers this!
+
+In addition, further emphasizing the potential, Cameron McKay, an Azure Application Architect, concluded in a LinkedIn blog post about the agent loop feature in Logic Apps:
+
+This functionality has a lot of potential, and the number of use cases is up to the business and implementer; a few use cases include responding to error events and performing processes based on conversations with humans. I'm excited to see how the use cases for this functionality evolve; without a doubt, this is a highly transformative and useful piece of functionality being added to the Azure Logic Apps toolkit.
+
+Agent loop is available in Azure Logic Apps Standard, and the company has provided documentation and demos to help developers get started. It has also outlined future plans for multi-agent hand-off support, A2A (Agent-to-Agent) protocol support, and OBO Auth for Logic Apps Agents.",https://www.infoq.com/news/2025/05/azure-logic-apps-agent-loop/,Technology

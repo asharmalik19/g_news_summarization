@@ -33,7 +33,7 @@ def generate_summary(article, client):
     return response.text
 
 def store_articles_in_db(articles_df):
-    with sqlite3.connect('articles_data.db') as con:
+    with sqlite3.connect('data/articles_data.db') as con:
         articles_df.to_sql('article', con, if_exists='replace')
     return
     
@@ -41,7 +41,7 @@ if __name__ == '__main__':
     GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
     client = genai.Client(api_key=GEMINI_API_KEY)
 
-    df = pd.read_csv('articles.csv')
+    df = pd.read_csv('data/articles.csv')
     for i, row in df.iterrows():
         article_with_title = f"{row['title']}\n\n{row['text']}"
         summary = generate_summary(article_with_title, client)
