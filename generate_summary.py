@@ -19,7 +19,8 @@ def generate_summary(article, client):
     for attempt in range(3):
         try:
             response = client.models.generate_content(
-                model="gemma-3-27b-it",
+                # model="gemma-3-27b-it",
+                model="gemini-2.0-flash-lite",
                 contents=prompt
             )
             break
@@ -29,7 +30,7 @@ def generate_summary(article, client):
             delay_time = e.details['error']['details'][2]['retryDelay']
             delay_time_int = int(delay_time[:-1])
             print(f"Rate limit exceeded. Retrying in {delay_time_int} seconds...")
-            time.sleep(delay_time_int)   
+            time.sleep(delay_time_int + 30)   
     return response.text
 
 def store_articles_in_db(articles_df):
