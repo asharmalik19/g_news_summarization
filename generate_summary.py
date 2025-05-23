@@ -19,8 +19,8 @@ def generate_summary(article, client):
     for attempt in range(3):
         try:
             response = client.models.generate_content(
-                # model="gemma-3-27b-it",
-                model="gemini-2.0-flash-lite",
+                model="gemma-3-27b-it",
+                # model="gemini-2.0-flash-lite",
                 contents=prompt
             )
             break
