@@ -13,7 +13,7 @@ async def read_index():
     
 @app.get("/summaries")
 def read_summaries():
-    with sqlite3.connect('./articles_data.db') as con:
+    with sqlite3.connect('data/articles_data.db') as con:
         con.row_factory = sqlite3.Row
         cur = con.cursor()
         rows = cur.execute("SELECT title, summary, url FROM article").fetchall()
@@ -22,7 +22,7 @@ def read_summaries():
     
 @app.get("/summaries/{category}")
 def read_summaries_by_category(category):
-    with sqlite3.connect('./articles_data.db') as con:
+    with sqlite3.connect('data/articles_data.db') as con:
         con.row_factory = sqlite3.Row
         cur = con.cursor()
         rows = cur.execute("SELECT title, summary, url FROM article WHERE Category = ?", (category, )).fetchall()
