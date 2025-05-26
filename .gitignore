@@ -3,3 +3,4 @@ extra.py
 __pycache__/
 *.log
 extra.ipynb
+.env

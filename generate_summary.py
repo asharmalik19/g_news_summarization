@@ -4,6 +4,7 @@ import sqlite3
 import pandas as pd
 import time
 from google.genai.errors import ClientError
+from dotenv import load_dotenv
 
 def generate_summary(article, client):
     prompt = f"""
@@ -39,6 +40,7 @@ def store_articles_in_db(articles_df):
     return
     
 if __name__ == '__main__':
+    load_dotenv()
     GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
     client = genai.Client(api_key=GEMINI_API_KEY)
 
