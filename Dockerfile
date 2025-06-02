@@ -1,10 +1,13 @@
-FROM python:3
+# syntax=docker/dockerfile:1
 
-WORKDIR /usr/src/app
+FROM python:3.9
 
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+WORKDIR /code
 
-COPY . .
+COPY ./requirements.txt /code/requirements.txt
 
-CMD [ "python", "./your-daemon-or-script.py" ]
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+
+COPY ./main.py /code/
+
+CMD ["fastapi", "run", "main.py", "--port", "8000"]
