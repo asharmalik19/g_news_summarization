@@ -1,3 +1,5 @@
+![WIP](https://img.shields.io/badge/status-WIP-yellow.svg)
+
 # Google News Summarizer
 A Python application that extracts news articles from Google News feeds and generates concise summaries using Large Language Models (LLM).
 
