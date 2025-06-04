@@ -14,7 +14,7 @@ A Python application that extracts news articles from Google News feeds and gene
 - **Python 3.12+**
 - Internet connection for downloading news database
 
-## Installation
+## Setup guide
 1. Clone the repo:
     ```bash
     git clone https://github.com/asharmalik19/g_news_summarization.git
