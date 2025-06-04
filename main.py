@@ -3,7 +3,7 @@ from fastapi.staticfiles import StaticFiles
 import sqlite3
 from fastapi.responses import FileResponse
 
-app = FastAPI(title="Google news Summary API")
+app = FastAPI(title="Google News Summary API")
 app.mount("/static", StaticFiles(directory="static", html=True), name="static")
 
 @app.get("/")
