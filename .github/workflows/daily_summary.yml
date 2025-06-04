@@ -30,10 +30,10 @@ jobs:
           echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> $GITHUB_ENV
 
       - name: Fetch news articles
-        run: python get_data.py
+        run: python data_extraction_pipeline/get_data.py
 
       - name: Generate summaries
-        run: python generate_summary.py
+        run: python data_extraction_pipeline/generate_summary.py
 
       - name: Add db file to the Release
         uses: softprops/action-gh-release@v1

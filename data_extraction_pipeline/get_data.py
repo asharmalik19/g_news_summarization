@@ -89,7 +89,7 @@ if __name__ == '__main__':
     data_final = pd.concat(data, ignore_index=True)
     data_final['text'] = data_final['text'].apply(lambda x: x.strip())
     data_final.dropna(subset=['text'], inplace=True)
-    data_final.to_csv('data/articles.csv', index=False)
+    data_final.to_csv('../data/articles.csv', index=False)
 
 
     

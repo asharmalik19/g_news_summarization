@@ -44,7 +44,7 @@ if __name__ == '__main__':
     GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
     client = genai.Client(api_key=GEMINI_API_KEY)
 
-    df = pd.read_csv('data/articles.csv')
+    df = pd.read_csv('../data/articles.csv')
     for i, row in df.iterrows():
         article_with_title = f"{row['title']}\n\n{row['text']}"
         summary = generate_summary(article_with_title, client)
