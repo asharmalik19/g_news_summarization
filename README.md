@@ -29,19 +29,20 @@ A Python application that extracts news articles from Google News feeds and gene
     ```bash
     pip install -r requirements.txt
     ```
-4. Download the updated database file
+4. Navigate to the app folder and download the updated database file by running
     ```bash
     python3 ./download_db.py
     ```
 
 ## Usage
+1. **Navigate to the app folder**
 
-1. **Start the application:**
+2. **Start the application by running**
    ```bash
-   uvicorn main:app
+   uvicorn main:app --port 8000     # or any other free port
    ```
 
-2. **Open your browser and navigate to:**
+3. **Open your browser and navigate to**
    ```
    http://127.0.0.1:8000
    ```
