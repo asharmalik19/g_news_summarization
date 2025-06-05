@@ -7,6 +7,7 @@ from curl_cffi.requests import AsyncSession
 import asyncio
 import logging
 import pandas as pd
+import os
 
 logging.basicConfig(
     level=logging.INFO,
@@ -70,6 +71,16 @@ async def get_articles(links):
         })
     return articles
 
+def save_articles_to_csv(data_final):
+    """Save the articles csv file to the data directory."""
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(script_dir)
+    data_dir = os.path.join(project_root, 'data')
+    os.makedirs(data_dir, exist_ok=True)
+    csv_file_path = os.path.join(data_dir, 'articles.csv')
+    with open(csv_file_path, 'w', encoding='utf-8') as f:
+        data_final.to_csv(f, index=False)
+
 if __name__ == '__main__':
     categories_and_feed_urls = {
         'Technology': 'https://news.google.com/rss/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRGRqTVhZU0JXVnVMVWRDR2dKUVN5Z0FQAQ?hl=en-PK&gl=PK&ceid=PK:en',
@@ -89,9 +100,8 @@ if __name__ == '__main__':
     data_final = pd.concat(data, ignore_index=True)
     data_final['text'] = data_final['text'].apply(lambda x: x.strip())
     data_final.dropna(subset=['text'], inplace=True)
-    data_final.to_csv('../data/articles.csv', index=False)
+    save_articles_to_csv(data_final)
 
 
-    
 
 
