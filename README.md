@@ -22,7 +22,7 @@ A Python application that extracts news articles from Google News feeds and gene
     ```
 2. Create & activate a virtual environment:
     ```bash
-    python3 -m venv venv
+    python -m venv venv
     source venv/bin/activate    # On Windows: venv\Scripts\activate
     ```
 3. Install Python dependencies:
