@@ -1,7 +1,5 @@
-![WIP](https://img.shields.io/badge/status-WIP-yellow.svg)
-
 # Google News Summarizer
-A Python application that extracts news articles from Google News feeds and generates concise summaries using Large Language Models (LLM).
+A Python application that extracts news articles from Google News feeds and generates concise summaries using Large Language Models (LLM), giving you daily fresh summaries by topics (i.e, Technology, Business etc).
 
 ## Features
 - 📰 Extracts news articles from Google News RSS feeds
@@ -29,9 +27,9 @@ A Python application that extracts news articles from Google News feeds and gene
     ```bash
     pip install -r requirements.txt
     ```
-4. Navigate to the app folder and download the updated database file by running
+4. Navigate to the folder `app` and download the updated database file by running
     ```bash
-    python3 ./download_db.py
+    python ./download_db.py
     ```
 
 ## Usage

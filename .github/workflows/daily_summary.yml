@@ -1,6 +1,6 @@
 on:
   schedule:
-    - cron:  '40 15 * * *'
+    - cron:  '0 1 * * *'
   workflow_dispatch:
 
 permissions:
@@ -30,10 +30,15 @@ jobs:
           echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> $GITHUB_ENV
 
       - name: Fetch news articles
-        run: python data_extraction_pipeline/get_data.py
+        run: |
+          echo "Fetching news articles..."
+          python data_extraction_pipeline/get_data.py
 
       - name: Generate summaries
-        run: python data_extraction_pipeline/generate_summary.py
+        run: |
+          echo "Generating summaries..."
+          python data_extraction_pipeline/generate_summary.py
+          echo "Summaries generated successfully."
 
       - name: Add db file to the Release
         uses: softprops/action-gh-release@v1
