@@ -69,8 +69,9 @@ A Python application that extracts news articles from Google News feeds and gene
 ```
 
 ## Data Extraction 
-A github actions workflow is set to run the data extraction pipeline daily which contains `get_data.py` and `generate_summary.py` scripts. The final output of this pipeline is a `sqlite` database file. The workflow adds this database file to the release of this repo replacing previous file. 
-This is how the database containing news articles and their generated summaries is updated daily but if you want the most recent articles, then you can run the workflow manually to get the most recent articles.
+A github actions workflow is set to run the data extraction pipeline daily which contains `get_data.py` and `generate_summary.py` scripts. The final output of this pipeline is a `sqlite` database file. The workflow adds this database file to the releases of this repo replacing the previous file. 
+
+This is how the database containing news articles and their generated summaries is updated daily but if you want the most recent articles, then you can run the workflow manually which runs the data extraction pipeline.
 
 
 
