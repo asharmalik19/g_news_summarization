@@ -6,3 +6,4 @@ extra.ipynb
 .env
 *.csv
 *.db
+data/
