@@ -27,6 +27,11 @@ def read_summaries_by_category(category):
         rows = cur.execute("SELECT title, summary, url FROM article WHERE Category = ?", (category, )).fetchall()
         articles = [dict(row) for row in rows]
         return {'articles': articles}
+    
+# @app.get("/search")
+# def rag_search(query):
+
+
 
 
 
