@@ -1,6 +1,7 @@
+import sqlite3
+
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-import sqlite3
 from fastapi.responses import FileResponse
 
 from rag.rag_search import search
@@ -30,12 +31,11 @@ def read_summaries_by_category(category):
         articles = [dict(row) for row in rows]
         return {'articles': articles}
     
-# @app.get("/search")
+@app.get("/search")
 def rag_search(query):
     result = search(query)
-    print(result)
+    return result
 
-rag_search('mobile phone')
 
 
 

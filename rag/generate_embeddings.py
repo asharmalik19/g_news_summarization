@@ -13,7 +13,7 @@ def read_articles(data_dir):
     articles_db_path = os.path.join(data_dir, 'articles_data.db')
     with sqlite3.connect(articles_db_path) as conn:
         df = pd.read_sql("SELECT text, url FROM article", conn)
-    return df.iloc[:5]  # temp limit to 5 articles for testing
+    return df
     
 if __name__=='__main__':
     load_dotenv()
@@ -29,13 +29,15 @@ if __name__=='__main__':
     db = chroma_client.create_collection(name='my_db', embedding_function=embedding_fn)
 
     articles = read_articles(data_dir) 
-    urls = [{'url': url} for url in articles['url'].tolist()]
-
-    db.add(
-        documents=articles['text'].tolist(), 
-        ids=[str(i) for i in range(len(articles))],
-        metadatas=urls
-    )
+    for batch in range(0, len(articles), 100):
+        batch_articles = articles.iloc[batch:batch + 100]
+        print(f'generating embeddings for batch {batch // 100 + 1}')
+        
+        db.add(
+            documents=batch_articles['text'].tolist(), 
+            ids=[str(i) for i in range(len(batch_articles))],
+            metadatas=[{'url': url} for url in batch_articles['url'].tolist()]
+        )
 
 
 

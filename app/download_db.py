@@ -1,5 +1,6 @@
-import requests
 import os
+
+import requests
 
 def save_db_file(response):
     """Save the downloaded SQLite database file to the data directory."""
