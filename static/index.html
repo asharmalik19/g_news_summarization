@@ -26,6 +26,37 @@
             color: #2c3e50;
         }
         
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        
+        .search-input {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 300px;
+        }
+        
+        .search-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .search-result {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
         .category-selector {
             display: flex;
             justify-content: center;
@@ -50,6 +81,10 @@
         
         .category-btn.active {
             background-color: #2c3e50;
+        }
+        
+        .content-container {
+            display: block;
         }
         
         .articles-container {
@@ -128,6 +163,11 @@
     </header>
     
     <main>
+        <div class="search-container">
+            <input type="text" id="search-input" class="search-input" placeholder="Search articles...">
+            <button id="search-btn" class="search-btn">Search</button>
+        </div>
+        
         <div class="category-selector">          
             <button class="category-btn active" data-category="all">All News</button>
             <button class="category-btn" data-category="Technology">Technology</button>
@@ -139,48 +179,83 @@
         
         <div id="loading" class="loading">Loading summaries...</div>
         <div id="error" class="error" style="display: none;"></div>
-        <div id="articles" class="articles-container"></div>
+        <div id="content" class="content-container">
+            <div id="articles" class="articles-container"></div>
+        </div>
     </main>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const contentContainer = document.getElementById('content');
             const articlesContainer = document.getElementById('articles');
             const loadingElement = document.getElementById('loading');
             const errorElement = document.getElementById('error');
             const currentCategoryElement = document.getElementById('current-category');
             const categoryButtons = document.querySelectorAll('.category-btn');
+            const searchInput = document.getElementById('search-input');
+            const searchBtn = document.getElementById('search-btn');
             
-            // Set initial category
             let currentCategory = 'all';
             
-            // Add event listeners to category buttons
+            // Search functionality
+            function performSearch() {
+                const query = searchInput.value.trim();
+                if (!query) return;
+                
+                contentContainer.innerHTML = '';
+                loadingElement.style.display = 'block';
+                errorElement.style.display = 'none';
+                currentCategoryElement.textContent = `Search results for: "${query}"`;
+                
+                fetch(`/search?query=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        loadingElement.style.display = 'none';
+                        
+                        const result = document.createElement('div');
+                        result.className = 'search-result';
+                        result.innerHTML = `
+                            <div class="article-title">Summary for ${query}</div>
+                            <div class="article-summary">${data.summary}</div>
+                            ${data.retrieved_urls.map(url => 
+                                `<a href="${url}" class="article-link" target="_blank">Source</a>`
+                            ).join(' | ')}
+                        `;
+                        contentContainer.appendChild(result);
+                    })
+                    .catch(error => {
+                        loadingElement.style.display = 'none';
+                        errorElement.textContent = `Error: ${error.message}`;
+                        errorElement.style.display = 'block';
+                    });
+            }
+            
+            searchBtn.addEventListener('click', performSearch);
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') performSearch();
+            });
+            
+            // Category functionality
             categoryButtons.forEach(button => {
                 button.addEventListener('click', () => {
-                    // Update active button
                     categoryButtons.forEach(btn => btn.classList.remove('active'));
                     button.classList.add('active');
                     
-                    // Get selected category
                     const category = button.getAttribute('data-category');
                     currentCategory = category;
                     
-                    // Update display
                     currentCategoryElement.textContent = `Showing: ${category === 'all' ? 'All News' : category}`;
                     
-                    // Clear articles
-                    articlesContainer.innerHTML = '';
-                    
-                    // Show loading
+                    contentContainer.innerHTML = '<div id="articles" class="articles-container"></div>';
+                    const newArticlesContainer = document.getElementById('articles');
                     loadingElement.style.display = 'block';
                     errorElement.style.display = 'none';
                     
-                    // Fetch articles for the selected category
-                    fetchArticles(category);
+                    fetchArticles(category, newArticlesContainer);
                 });
             });
             
-            // Function to fetch articles
-            function fetchArticles(category) {
+            function fetchArticles(category, container = articlesContainer) {
                 const url = category === 'all' ? '/summaries' : `/summaries/${category}`;
                 
                 fetch(url)
@@ -199,7 +274,6 @@
                             return;
                         }
                         
-                        // Create article cards
                         data.articles.forEach(article => {
                             const articleCard = document.createElement('div');
                             articleCard.className = 'article-card';
@@ -222,7 +296,7 @@
                             articleCard.appendChild(summary);
                             articleCard.appendChild(link);
                             
-                            articlesContainer.appendChild(articleCard);
+                            container.appendChild(articleCard);
                         });
                     })
                     .catch(error => {
@@ -233,7 +307,6 @@
                     });
             }
             
-            // Initial fetch for all articles
             fetchArticles(currentCategory);
         });
     </script>
