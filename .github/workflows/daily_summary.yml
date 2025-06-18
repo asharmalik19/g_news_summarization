@@ -46,5 +46,21 @@ jobs:
           tag_name: daily-summary
           files: data/articles_data.db
 
+      - name: Create a vector database
+        run: |
+          echo "Creating vector database..."
+          python rag/generate_embeddings.py
+          echo "Vector database created successfully."
+
+      - name: Zip the chroma vector database
+        run: tar -czf vector_db.tar.gz data/chroma_db
+
+      - name: Upload vector database to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: daily-summary
+          files: vector_db.tar.gz
+
+
 
         
