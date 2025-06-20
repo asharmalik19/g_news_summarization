@@ -53,7 +53,7 @@ jobs:
           echo "Vector database created successfully."
 
       - name: Zip the chroma vector database
-        run: tar -czf vector_db.tar.gz data/chroma_db
+        run: tar -czf vector_db.tar.gz -C data chroma_db
 
       - name: Upload vector database to Release
         uses: softprops/action-gh-release@v1
