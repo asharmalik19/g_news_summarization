@@ -1,13 +1,15 @@
+import os
+import re
+import numpy as np
+import asyncio
+import logging
+
 import feedparser
 from playwright.sync_api import sync_playwright
 from playwright.sync_api import TimeoutError
-import re
 from newspaper import Article
 from curl_cffi.requests import AsyncSession
-import asyncio
-import logging
 import pandas as pd
-import os
 
 logging.basicConfig(
     level=logging.INFO,
@@ -98,8 +100,10 @@ if __name__ == '__main__':
         df['category'] = category
         data.append(df)
     data_final = pd.concat(data, ignore_index=True)
-    data_final['text'] = data_final['text'].apply(lambda x: x.strip())
+    # newspaper sometimes returns empty text for articles
+    data_final['text'] = data_final['text'].replace('', np.nan)
     data_final.dropna(subset=['text'], inplace=True)
+    data_final['text'] = data_final['text'].apply(lambda x: x.strip())
     save_articles_to_csv(data_final)
 
 

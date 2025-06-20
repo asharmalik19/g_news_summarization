@@ -7,10 +7,14 @@ A Python application that extracts news articles from Google News feeds and gene
 - 🌐 Web interface to display summaries with source links
 - 📂 Browse news summaries by category
 - 🔄 Fresh news updates via downloadable database
+- 🔍 RAG based search functionality where you can get a summarized content based on a query
 
 ## Prerequisites
-- **Python 3.12+**
+- Python 3.12+
 - Internet connection for downloading news database
+- Gemini API key (for the search functionality)
+
+Get your Gemini API key from the Google AI Studio.
 
 ## Setup guide
 1. Clone the repo:
@@ -18,34 +22,39 @@ A Python application that extracts news articles from Google News feeds and gene
     git clone https://github.com/asharmalik19/g_news_summarization.git
     cd g_news_summarization
     ```
-2. Create & activate a virtual environment:
+2. Create a `.env` file in the root directory of the project and this line to the file:
+    ```bash
+    GEMINI_API_KEY=your_gemini_api_key_here
+    ```
+   Replace `your_gemini_api_key_here` with your actual Gemini API key.
+
+3. Create & activate a virtual environment:
     ```bash
     python -m venv venv
     source venv/bin/activate    # On Windows: venv\Scripts\activate
     ```
-3. Install Python dependencies:
+4. Install Python dependencies:
     ```bash
     pip install -r requirements.txt
     ```
-4. Navigate to the folder `app` and download the updated database file by running
+5. Download the updated database files by running
     ```bash
-    python ./download_db.py
+    python app/download_db.py
     ```
+This will download the latest `articles_data.db` file and `chroma_db` from the releases of this repo and place it in the `data` folder.
 
 ## Usage
-1. **Navigate to the app folder**
-
-2. **Start the application by running**
+1. **Start the application by running**
    ```bash
-   uvicorn main:app --port 8000     # or any other free port
+   uvicorn app.main:app --port 8000     # or any other free port
    ```
 
-3. **Open your browser and navigate to**
+2. **Open your browser and navigate to**
    ```
    http://127.0.0.1:8000
    ```
 
-**Note:** You need to download the fresh copy of sqlite db file before running the application to get the fresh news articles.
+**Note:** You need to download the fresh copy of sqlite db file before running the application to get the daily fresh news articles.
 
 ## Project Structure
 ```
@@ -62,6 +71,10 @@ A Python application that extracts news articles from Google News feeds and gene
 ├── data_extraction_pipeline
 │   ├── generate_summary.py
 │   └── get_data.py
+├── rag
+│   └── embedding_function.py
+|   |── generate_embeddings.py
+|   |── rag_search.py  
 ├── requirements.txt
 ├── static
 │   └── index.html
