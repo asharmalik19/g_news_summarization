@@ -2,11 +2,7 @@ import os
 
 import requests
 import tarfile
-
-def unzip_chromadb_file(chromadb_file_path):
-    with tarfile.open(chromadb_file_path, 'r:gz') as tar:
-        tar.extractall(path=chromadb_file_path)
-        os.remove(chromadb_file_path)
+import time
 
 def save_db(response, db_name):
     """Save the downloaded SQLite database file to the data directory."""
@@ -17,8 +13,12 @@ def save_db(response, db_name):
     db_file_path = os.path.join(data_dir, db_name)
     with open(db_file_path, 'wb') as f:
         f.write(response.content)
+
     if db_name.endswith('.tar.gz'):
-        unzip_chromadb_file(db_file_path)
+        with tarfile.open(db_file_path, 'r:gz') as tar:
+            tar.extractall(path=data_dir)
+            time.sleep(0.5)    # sleep for windows OS
+            os.remove(db_file_path)
 
 def get_db(url, db_name):
     """Download the SQLite database from the specified URL."""

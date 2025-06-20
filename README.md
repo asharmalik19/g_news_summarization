@@ -22,7 +22,7 @@ Get your Gemini API key from the Google AI Studio.
     git clone https://github.com/asharmalik19/g_news_summarization.git
     cd g_news_summarization
     ```
-2. Create a `.env` file in the root directory of the project and add your Gemini API key:
+2. Create a `.env` file in the root directory of the project and this line to the file:
     ```bash
     GEMINI_API_KEY=your_gemini_api_key_here
     ```
