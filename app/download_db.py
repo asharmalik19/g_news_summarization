@@ -2,7 +2,6 @@ import os
 
 import requests
 import tarfile
-import time
 
 def save_db(response, db_name):
     """Save the downloaded SQLite database file to the data directory."""
