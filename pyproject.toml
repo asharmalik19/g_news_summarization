@@ -1,0 +1,7 @@
+[project]
+name = "g-news-summarization"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
