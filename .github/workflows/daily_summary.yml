@@ -13,17 +13,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.12'
-        
-      - name: Install dependencies
-        run: | 
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install playwright
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      - name: Set virtual environment and dependencies
+        run: |
+          uv sync
+          echo $(uv --version)
           python -m playwright install chromium
+
+      # - name: Set up Python
+      #   uses: actions/setup-python@v4
+      #   with:
+      #     python-version: '3.12'
+        
+      # - name: Install dependencies
+      #   run: | 
+      #     python -m pip install --upgrade pip
+      #     pip install -r requirements.txt
+      #     pip install playwright
+      #     python -m playwright install chromium
 
       - name: Set up Gemini API key
         run: | 
