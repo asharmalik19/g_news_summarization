@@ -3,8 +3,14 @@ import os
 import requests
 import tarfile
 
+"""This module downloads the required databases from the GitHub releases everytime the app runs."""
+
 def save_db(response, db_name):
-    """Save the downloaded SQLite database file to the data directory."""
+    """
+    Saves the downloaded database file to the 'data/' directory
+    at the project root. If the file is a .tar.gz archive, it is
+    extracted automatically.
+    """
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(script_dir)
     data_dir = os.path.join(project_root, 'data')
@@ -18,7 +24,9 @@ def save_db(response, db_name):
             tar.extractall(path=data_dir)
 
 def get_db(url, db_name):
-    """Download the SQLite database from the specified URL."""
+    """
+    Downloads the database file from the github release URL.
+    """
     print(f"Downloading database {db_name}")
     response = requests.get(url)
     save_db(response, db_name)

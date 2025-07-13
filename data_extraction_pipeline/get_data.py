@@ -74,7 +74,7 @@ async def get_articles(links):
     return articles
 
 def save_articles_to_csv(data_final):
-    """Save the articles csv file to the data directory."""
+    """Save the articles csv file to the data directory at project root."""
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(script_dir)
     data_dir = os.path.join(project_root, 'data')
