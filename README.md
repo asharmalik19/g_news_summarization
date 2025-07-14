@@ -12,7 +12,7 @@ A Python application that extracts news articles from Google News feeds and gene
 - 🔍 RAG based search functionality where you can get a summarized content based on a query
 
 ## Prerequisites
-- uv 
+- `uv` 
 - Internet connection for downloading news database
 - Gemini API key (for the search functionality)
 

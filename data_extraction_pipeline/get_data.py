@@ -54,9 +54,15 @@ async def get_responses(links):
         tasks = []
         for link in links:
             tasks.append(session.get(link, impersonate='chrome', verify=False))
-        responses = await asyncio.gather(*tasks)      
-        valid_responses = [response for response in responses if response.status_code == 200] 
-        return valid_responses
+        responses = []
+        results = await asyncio.gather(*tasks, return_exceptions=True)      
+        for result in results:
+            if isinstance(result, Exception):
+                logging.warning(f'Request failed by curl-cffi: {result}')
+                continue
+            if result.status_code == 200:
+                responses.append(result)
+        return responses
 
 async def get_articles(links):
     responses = await get_responses(links)
