@@ -1,3 +1,5 @@
+![Status](https://img.shields.io/badge/status-breaking-red)
+
 # Google News Summarizer
 A Python application that extracts news articles from Google News feeds and generates concise summaries using a Large Language Model (LLM), giving you daily fresh summaries by topics (i.e, Technology, Business etc).
 
@@ -10,51 +12,43 @@ A Python application that extracts news articles from Google News feeds and gene
 - 🔍 RAG based search functionality where you can get a summarized content based on a query
 
 ## Prerequisites
-- Python 3.12+
+- uv 
 - Internet connection for downloading news database
 - Gemini API key (for the search functionality)
 
 Get your Gemini API key from the Google AI Studio.
 
 ## Setup guide
-1. Clone the repo:
+1. Install `uv` from here: https://docs.astral.sh/uv/getting-started/installation/
+
+2. Clone the repo:
     ```bash
     git clone https://github.com/asharmalik19/g_news_summarization.git
     cd g_news_summarization
     ```
-2. Create a `.env` file in the root directory of the project and this line to the file:
+3. Create a `.env` file in the root directory of the project and this line to the file:
     ```bash
     GEMINI_API_KEY=your_gemini_api_key_here
     ```
-   Replace `your_gemini_api_key_here` with your actual Gemini API key.
+Replace `your_gemini_api_key_here` with your actual Gemini API key.
 
-3. Create & activate a virtual environment:
+4. Syncronize virtual environment by installing the required packages
     ```bash
-    python -m venv venv
-    source venv/bin/activate    # On Windows: venv\Scripts\activate
+    uv sync
     ```
-4. Install Python dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
-5. Download the updated database files by running
-    ```bash
-    python app/download_db.py
-    ```
-This will download the latest `articles_data.db` file and `chroma_db` from the releases of this repo and place it in the `data` folder.
+
+This will automatically download the latest `articles_data.db` file and `chroma_db` and start the app.
 
 ## Usage
-1. **Start the application by running**
-   ```bash
-   uvicorn app.main:app --port 8000     # or any other free port
-   ```
+1. Run the `main.py` file
+    ```bash
+    uv run main.py
+    ```
 
 2. **Open your browser and navigate to**
    ```
    http://127.0.0.1:8000
    ```
-
-**Note:** You need to download the fresh copy of sqlite db file before running the application to get the daily fresh news articles.
 
 ## Project Structure
 ```
