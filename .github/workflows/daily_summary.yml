@@ -20,7 +20,7 @@ jobs:
         run: |
           uv sync
           echo $(uv --version)
-          python -m playwright install chromium
+          uv run python -m playwright install chromium
 
       # - name: Set up Python
       #   uses: actions/setup-python@v4
@@ -41,12 +41,12 @@ jobs:
       - name: Fetch news articles
         run: |
           echo "Fetching news articles..."
-          python data_extraction_pipeline/get_data.py
+          uv run python data_extraction_pipeline/get_data.py
 
       - name: Generate summaries
         run: |
           echo "Generating summaries..."
-          python data_extraction_pipeline/generate_summary.py
+          uv run python data_extraction_pipeline/generate_summary.py
           echo "Summaries generated successfully."
 
       - name: Add db file to the Release
@@ -58,7 +58,7 @@ jobs:
       - name: Create a vector database
         run: |
           echo "Creating vector database..."
-          python rag/generate_embeddings.py
+          uv run python rag/generate_embeddings.py
           echo "Vector database created successfully."
 
       - name: Zip the chroma vector database
