@@ -1,4 +1,3 @@
-
 # Google News Summarizer
 A Python application that extracts news articles from Google News feeds and generates concise summaries using a Large Language Model (LLM), giving you daily fresh summaries by topics (i.e, Technology, Business etc).
 
@@ -43,11 +42,17 @@ This will automatically download the latest `articles_data.db` file and `chroma_
     ```bash
     uv run main.py
     ```
+   
+    If port 8000 is busy, specify a different port:
+    ```bash
+    uv run main.py 8001
+    ```
 
 2. **Open your browser and navigate to**
-   ```
-   http://127.0.0.1:8000
-   ```
+    ```
+    http://127.0.0.1:8000
+    ```
+    (Or whatever port you specified)
 
 ## Project Structure
 ```
