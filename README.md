@@ -1,4 +1,3 @@
-![Status](https://img.shields.io/badge/status-breaking-red)
 
 # Google News Summarizer
 A Python application that extracts news articles from Google News feeds and generates concise summaries using a Large Language Model (LLM), giving you daily fresh summaries by topics (i.e, Technology, Business etc).
