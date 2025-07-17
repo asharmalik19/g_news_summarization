@@ -89,6 +89,17 @@ def save_articles_to_csv(data_final):
     with open(csv_file_path, 'w', encoding='utf-8') as f:
         data_final.to_csv(f, index=False)
 
+def clean_the_data(df):
+    """The newspaper library can sometimes return articles with empty text
+    and there are also articles behind paywalls that needs to be cleaned.
+    """
+    df['text'] = df['text'].apply(lambda x: np.nan if 'Try unlimited access' in x else x)
+    df['text'] = df['text'].replace('', np.nan)
+    df.dropna(subset=['text'], inplace=True)
+    df['text'] = df['text'].apply(lambda x: x.strip())
+    return df
+    
+
 if __name__ == '__main__':
     categories_and_feed_urls = {
         'Technology': 'https://news.google.com/rss/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRGRqTVhZU0JXVnVMVWRDR2dKUVN5Z0FQAQ?hl=en-PK&gl=PK&ceid=PK:en',
@@ -106,11 +117,8 @@ if __name__ == '__main__':
         df['category'] = category
         data.append(df)
     data_final = pd.concat(data, ignore_index=True)
-    # newspaper sometimes returns empty text for articles
-    data_final['text'] = data_final['text'].replace('', np.nan)
-    data_final.dropna(subset=['text'], inplace=True)
-    data_final['text'] = data_final['text'].apply(lambda x: x.strip())
-    save_articles_to_csv(data_final)
+    cleaned_data_final = clean_the_data(data_final)
+    save_articles_to_csv(cleaned_data_final)
 
 
 
