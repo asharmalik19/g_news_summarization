@@ -88,8 +88,7 @@ This is how the database containing news articles and their generated summaries 
 - [] Optimize the data extraction by using `playwright asynchronous` API to render multiple urls ayncronously.
 - [] Enhance the displayed summaries.
 
-
-
-
+### Minor Enhancements
+- [] Improve the technical docs.
 
 

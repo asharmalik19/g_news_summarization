@@ -8,8 +8,7 @@ import tarfile
 def save_db(response, db_name):
     """
     Saves the downloaded database file to the 'data/' directory
-    at the project root. If the file is a .tar.gz archive, it is
-    extracted automatically.
+    at the project root.
     """
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(script_dir)
