@@ -5,11 +5,10 @@ import asyncio
 import logging
 
 import feedparser
-from playwright.sync_api import sync_playwright
-from playwright.sync_api import TimeoutError
 from newspaper import Article
 from curl_cffi.requests import AsyncSession
 import pandas as pd
+from playwright.async_api import async_playwright, TimeoutError
 
 logging.basicConfig(
     level=logging.INFO,
@@ -25,28 +24,32 @@ def get_links_from_feed(url):
     for entry in d.entries:
         links.append(entry.link)
     return links
-    
-def get_redirected_links(rss_links):
+
+async def render_link(link, browser, pattern, sem):  
+    redirected_link = None
+    async with sem:
+        page = await browser.new_page()
+        try:
+            await page.goto(link)
+            await page.wait_for_url(pattern, timeout=15000)
+            redirected_link = page.url
+        except TimeoutError:
+            logging.warning(f'Timeout error for link: {link}')
+        except Exception as e:
+            logging.error(f'Error for link: {link}, Error: {e}')
+        await page.close()
+    return redirected_link
+
+async def get_redirected_links(rss_links):
     rss_prefix = r'https://news\.google\.com/rss/articles/'
     pattern = re.compile(rf'^(?!{rss_prefix}).+')
-
-    with sync_playwright() as playwright:
-        chromium = playwright.chromium 
-        browser = chromium.launch(headless=True)
-        
-        redirected_links = []
-        for link in rss_links:
-            try: 
-                page = browser.new_page()
-                page.goto(link)
-                page.wait_for_url(pattern, timeout=10000)
-                redirected_links.append(page.url)
-            except TimeoutError:
-                logging.warning(f'Timeout error for link: {link}')
-            except Exception as e:
-                logging.error(f'Error for link: {link}, Error: {e}')
-            page.close()
-        browser.close()
+    sem = asyncio.Semaphore(15)
+    async with async_playwright() as playwright:
+        browser = await playwright.chromium.launch(headless=True)
+        tasks = [render_link(link, browser, pattern, sem) for link in rss_links]
+        redirected_links = await asyncio.gather(*tasks)
+        await browser.close()
+    redirected_links = [link for link in redirected_links if link is not None]
     return redirected_links
 
 async def get_responses(links):
@@ -110,7 +113,7 @@ if __name__ == '__main__':
     for category, feed_url in categories_and_feed_urls.items():
         links = get_links_from_feed(feed_url)
         print(f'feed links: {links}')
-        redirected_links = get_redirected_links(links)
+        redirected_links = asyncio.run(get_redirected_links(links))
         print(f'redirected links: {redirected_links}')
         articles = asyncio.run(get_articles(redirected_links))
         df = pd.DataFrame(articles)
