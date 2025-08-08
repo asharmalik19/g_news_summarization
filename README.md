@@ -85,7 +85,7 @@ A github actions workflow is set to run the data extraction pipeline daily which
 This is how the database containing news articles and their generated summaries is updated daily but if you want the most recent articles, then you can run the workflow manually which runs the data extraction pipeline.
 
 ### Next Steps
-- [] Optimize the data extraction by using `playwright asynchronous` API to render multiple urls ayncronously.
+- [x] Optimize the data extraction by using `playwright asynchronous` API to render multiple urls ayncronously.
 - [] Enhance the displayed summaries.
 
 ### Minor Enhancements

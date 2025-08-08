@@ -1,10 +1,8 @@
 import os
 import sqlite3
-import time
 
 from google import genai
 import pandas as pd
-from google.genai.errors import ClientError
 from dotenv import load_dotenv
 from google.api_core import retry
 
