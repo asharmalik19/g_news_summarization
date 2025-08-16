@@ -284,7 +284,15 @@
                             
                             const summary = document.createElement('div');
                             summary.className = 'article-summary';
-                            summary.textContent = article.summary;
+
+                            const summaryList = document.createElement('ul');
+                            const summaryItems = article.summary.split('\n').filter(item => item.trim() !== '');
+                            summaryItems.forEach(itemText => {
+                                const summaryItem = document.createElement('li');
+                                summaryItem.textContent = itemText.replace(/^- /, '');
+                                summaryList.appendChild(summaryItem);
+                            });
+                            summary.appendChild(summaryList);
                             
                             const link = document.createElement('a');
                             link.className = 'article-link';
