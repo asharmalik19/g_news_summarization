@@ -19,11 +19,11 @@ def generate_summary(article, client):
     {article}
 
     Output format:
-    Return a 3-bullet point summary. No other text. Just the summary.
+    Return a 3-bullet point summary. No other text or symbols. Just the summary.
     Use the following format:
-    - <bullet_point_1>
-    - <bullet_point_2>
-    - <bullet_point_3>
+    <bullet_point_1>
+    <bullet_point_2>
+    <bullet_point_3>
     """
 
     response = client.models.generate_content(
