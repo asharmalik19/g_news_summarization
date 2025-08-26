@@ -22,18 +22,6 @@ jobs:
           echo $(uv --version)
           uv run python -m playwright install chromium
 
-      # - name: Set up Python
-      #   uses: actions/setup-python@v4
-      #   with:
-      #     python-version: '3.12'
-        
-      # - name: Install dependencies
-      #   run: | 
-      #     python -m pip install --upgrade pip
-      #     pip install -r requirements.txt
-      #     pip install playwright
-      #     python -m playwright install chromium
-
       - name: Set up Gemini API key
         run: | 
           echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> $GITHUB_ENV
@@ -59,7 +47,6 @@ jobs:
         run: |
           echo "Creating vector database..."
           uv run python rag/generate_embeddings.py
-          echo "Vector database created successfully."
 
       - name: Zip the chroma vector database
         run: tar -czf vector_db.tar.gz -C data chroma_db
