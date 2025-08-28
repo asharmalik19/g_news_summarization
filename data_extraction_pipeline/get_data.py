@@ -104,6 +104,7 @@ def clean_the_data(df):
     
 
 if __name__ == '__main__':
+    LIMIT_OF_ARTICLES_PER_CATEGORY = 50  # the LLM api has a limit of requests per day
     categories_and_feed_urls = {
         'Technology': 'https://news.google.com/rss/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRGRqTVhZU0JXVnVMVWRDR2dKUVN5Z0FQAQ?hl=en-PK&gl=PK&ceid=PK:en',
         'Business': 'https://news.google.com/rss/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRGx6TVdZU0JXVnVMVWRDR2dKUVN5Z0FQAQ?hl=en-PK&gl=PK&ceid=PK:en',
@@ -114,6 +115,7 @@ if __name__ == '__main__':
         links = get_links_from_feed(feed_url)
         print(f'feed links: {links}')
         redirected_links = asyncio.run(get_redirected_links(links))
+        redirected_links = redirected_links[:LIMIT_OF_ARTICLES_PER_CATEGORY]
         print(f'redirected links: {redirected_links}')
         articles = asyncio.run(get_articles(redirected_links))
         df = pd.DataFrame(articles)
