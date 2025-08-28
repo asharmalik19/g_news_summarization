@@ -1,11 +1,15 @@
 import os
 import sqlite3
+import json
 
 from google import genai
 import pandas as pd
 from dotenv import load_dotenv
 from google.api_core import retry
+from pydantic import BaseModel
 
+class ArticleSummary(BaseModel):
+    summary: list[str]
 
 is_retriable = lambda e: (isinstance(e, genai.errors.APIError) and e.code in {429, 503})
 
@@ -15,25 +19,27 @@ def generate_summary(article, client):
     You are a professional news‑summarizer.
     Read the article below and generate its summary in 3 concise points covering key ideas.
 
+    Rules:
+    - Plain sentences, no leading bullets, dashes, asterisks, or numbering. 
+
     Article:
     {article}
-
-    Output format:
-    Return a 3-bullet point summary. No other text or symbols. Just the summary.
-    Use the following format:
-    <bullet_point_1>
-    <bullet_point_2>
-    <bullet_point_3>
     """
 
     response = client.models.generate_content(
-        model='gemma-3-27b-it',
-        contents=prompt
+        # model='gemma-3-27b-it',
+        model='gemini-2.0-flash-lite',
+        contents=prompt,
+        config={
+            'response_mime_type': 'application/json',
+            'response_schema': ArticleSummary
+        }
     )  
-    return response.text
+    return response.parsed
 
 def store_articles_in_db(articles_df):
     with sqlite3.connect('data/articles_data.db') as con:
+        articles_df['summary'] = articles_df['summary'].apply(json.dumps)
         articles_df.to_sql('article', con, if_exists='replace')
     return
     
@@ -45,11 +51,13 @@ if __name__ == '__main__':
     data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../data')
     file_path = os.path.join(data_dir, 'articles.csv')
     df = pd.read_csv(filepath_or_buffer=file_path)
+    summaries = []
     for i, row in df.iterrows():
         article_with_title = f"{row['title']}\n\n{row['text']}"
-        summary = generate_summary(article_with_title, client)
-        df.loc[i, 'summary'] = summary
-        print(summary)
+        article_summary = generate_summary(article_with_title, client)
+        print(article_summary.summary)
+        summaries.append(article_summary.summary)
+    df['summary'] = summaries
         
     store_articles_in_db(df)
 
