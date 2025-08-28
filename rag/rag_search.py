@@ -38,12 +38,12 @@ def search(query):
     Retrieved Articles: {articles_combined}
     """
     response = client.models.generate_content(
-        model="gemma-3-27b-it",
+        model='gemma-3-27b-it',
         contents=prompt
     )
     return {
-        "summary": response.text,
-        "retrieved_urls": retrieved_urls
+        'summary': response.text,
+        'retrieved_urls': retrieved_urls
     }
 
 
