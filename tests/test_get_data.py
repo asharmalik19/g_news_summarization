@@ -5,11 +5,11 @@ import asyncio
 import pytest
 import pandas as pd
 
-# Add the project root to Python path
-sys.path.insert(0,
-os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# # Add the project root to Python path
+# sys.path.insert(0,
+# os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from data_extraction_pipeline.get_data import clean_the_data
+from g_news_summarization.get_data import clean_the_data
 
 def test_clean_the_data():
     df = pd.DataFrame({
