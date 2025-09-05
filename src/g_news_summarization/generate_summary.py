@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 from google.api_core import retry
 from pydantic import BaseModel
 
+from .downloader import find_project_root
+
 class ArticleSummary(BaseModel):
     summary: list[str]
 
@@ -37,8 +39,8 @@ def generate_summary(article, client):
     )  
     return response.parsed
 
-def store_articles_in_db(articles_df):
-    with sqlite3.connect('data/articles_data.db') as con:
+def store_articles_in_db(data_dir, articles_df):
+    with sqlite3.connect(f'{data_dir}/articles_data.db') as con:
         articles_df['summary'] = articles_df['summary'].apply(json.dumps)
         articles_df.to_sql('article', con, if_exists='replace')
     return
@@ -48,7 +50,8 @@ if __name__ == '__main__':
     GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
     client = genai.Client(api_key=GEMINI_API_KEY)
 
-    data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../data')
+    project_root = find_project_root()
+    data_dir = os.path.join(project_root, 'data')
     file_path = os.path.join(data_dir, 'articles.csv')
     df = pd.read_csv(filepath_or_buffer=file_path)
     summaries = []
@@ -59,7 +62,7 @@ if __name__ == '__main__':
         summaries.append(article_summary.summary)
     df['summary'] = summaries
         
-    store_articles_in_db(df)
+    store_articles_in_db(data_dir, df)
 
         
     

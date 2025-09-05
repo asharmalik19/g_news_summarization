@@ -2,7 +2,7 @@ import sys
 
 import uvicorn
 
-from .downloader import download_db
+from g_news_summarization.downloader import download_db
 
 def main():
     port = 8000
@@ -11,7 +11,7 @@ def main():
         port = int(sys.argv[1])
         
     download_db()
-    uvicorn.run('app.main:app', port=port, log_level='info')
+    uvicorn.run('g_news_summarization.main:app', port=port, log_level='info')
 
 if __name__ == "__main__":
     main()

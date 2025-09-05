@@ -10,6 +10,8 @@ from curl_cffi.requests import AsyncSession
 import pandas as pd
 from playwright.async_api import async_playwright, TimeoutError
 
+from .downloader import find_project_root
+
 logging.basicConfig(
     level=logging.INFO,
     filename='data_extraction.log',
@@ -83,9 +85,7 @@ async def get_articles(links):
     return articles
 
 def save_articles_to_csv(data_final):
-    """Save the articles csv file to the data directory at project root."""
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(script_dir)
+    project_root = find_project_root()
     data_dir = os.path.join(project_root, 'data')
     os.makedirs(data_dir, exist_ok=True)
     csv_file_path = os.path.join(data_dir, 'articles.csv')

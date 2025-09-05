@@ -5,15 +5,15 @@ import chromadb
 from dotenv import load_dotenv
 
 from .embedding_function import GeminiEmbeddingFunction
-
-# TODO: this design can be definitely improved
+from .downloader import find_project_root
 
 def search(query):
     load_dotenv()
     GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
     client = genai.Client(api_key=GEMINI_API_KEY)
 
-    data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../data')
+    project_root = find_project_root()
+    data_dir = os.path.join(project_root, 'data')
     chroma_db_path = os.path.join(data_dir, 'chroma_db')
 
     embedding_fn = GeminiEmbeddingFunction(client=client)

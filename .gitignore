@@ -7,3 +7,5 @@ extra.ipynb
 *.csv
 *.db
 data/
+
+src/*.egg-info
