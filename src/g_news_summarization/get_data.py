@@ -12,6 +12,8 @@ from playwright.async_api import async_playwright, TimeoutError
 
 from .downloader import find_project_root
 
+# TODO: The data extraction relies on 2 scripts run sequentially with intermediate data files, this design can be improved.
+
 logging.basicConfig(
     level=logging.INFO,
     filename='data_extraction.log',

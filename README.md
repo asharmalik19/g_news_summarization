@@ -38,9 +38,9 @@ Replace `your_gemini_api_key_here` with your actual Gemini API key.
 This will automatically download the latest `articles_data.db` file and `chroma_db` and start the app.
 
 ## Usage
-1. Run the `main.py` file
+1. Run the `app.py` file
     ```bash
-    uv run main.py
+    uv run app.py
     ```
    
     If port 8000 is busy, specify a different port:
@@ -56,27 +56,31 @@ This will automatically download the latest `articles_data.db` file and `chroma_
 
 ## Project Structure
 ```
-├── .github
-│   └── workflows
-├── .gitignore
-├── LICENSE
-├── README.md
-├── app
-│   ├── download_db.py
-│   └── main.py
+.
+├──github/
+├── app.py
+├── src
+│   ├── g_news_summarization
+│   │   ├── __init__.py
+│   │   ├── downloader.py
+│   │   ├── embedding_function.py
+│   │   ├── generate_embeddings.py
+│   │   ├── generate_summary.py
+│   │   ├── get_data.py
+│   │   ├── main.py
+│   │   └── rag_search.py
 ├── data
-│   └── articles_data.db
-├── data_extraction_pipeline
-│   ├── generate_summary.py
-│   └── get_data.py
-├── rag
-│   └── embedding_function.py
-|   |── generate_embeddings.py
-|   |── rag_search.py  
-├── requirements.txt
+│   ├── articles.csv
+│   ├── articles_data.db
+│   ├── chroma_db
 ├── static
 │   └── index.html
-└── venv
+├── tests
+│   └── test_get_data.py
+├── pyproject.toml
+└── uv.lock
+├── LICENSE
+├── README.md
 ```
 
 ## Data Extraction 
