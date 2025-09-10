@@ -7,7 +7,8 @@ import chromadb
 from dotenv import load_dotenv
 import pandas as pd
 
-from embedding_function import GeminiEmbeddingFunction
+from .embedding_function import GeminiEmbeddingFunction
+from .downloader import find_project_root
 
 def read_articles(data_dir):
     articles_db_path = os.path.join(data_dir, 'articles_data.db')
@@ -20,7 +21,9 @@ if __name__=='__main__':
     GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
     client = genai.Client(api_key=GEMINI_API_KEY)
 
-    data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../data')
+    # data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../data')
+    project_root = find_project_root()
+    data_dir = os.path.join(project_root, 'data')
     chroma_db_path = os.path.join(data_dir, 'chroma_db')
 
     shutil.rmtree(path=chroma_db_path, ignore_errors=True)

@@ -29,12 +29,12 @@ jobs:
       - name: Fetch news articles
         run: |
           echo "Fetching news articles..."
-          uv run python data_extraction_pipeline/get_data.py
+          uv run python -m src.g_news_summarization.get_data
 
       - name: Generate summaries
         run: |
           echo "Generating summaries..."
-          uv run python data_extraction_pipeline/generate_summary.py
+          uv run python -m src.g_news_summarization.generate_summary
           echo "Summaries generated successfully."
 
       - name: Add db file to the Release
@@ -46,7 +46,7 @@ jobs:
       - name: Create a vector database
         run: |
           echo "Creating vector database..."
-          uv run python rag/generate_embeddings.py
+          uv run python -m src.g_news_summarization.generate_embeddings
 
       - name: Zip the chroma vector database
         run: tar -czf vector_db.tar.gz -C data chroma_db

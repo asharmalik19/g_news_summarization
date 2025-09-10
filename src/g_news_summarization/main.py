@@ -5,7 +5,12 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
-from rag.rag_search import search
+from .rag_search import search
+
+"""
+The relative paths in this api file are with respect to where the uvicorn server is run,
+so if the uvicorn is run from the project root, the paths are relative to the project root.
+"""
 
 app = FastAPI(title="Google News Summary API")
 app.mount("/static", StaticFiles(directory="static", html=True), name="static")
