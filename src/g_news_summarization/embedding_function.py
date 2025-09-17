@@ -6,9 +6,11 @@ from google.genai import types
 # Define a helper to retry when per-minute quota is reached.
 is_retriable = lambda e: (isinstance(e, genai.errors.APIError) and e.code in {429, 503})
 
+
 class GeminiEmbeddingFunction(EmbeddingFunction):
     # Specify whether to generate embeddings for documents, or queries
-    document_mode = True  
+    document_mode = True
+
     def __init__(self, client):
         self.client = client
 
@@ -27,4 +29,3 @@ class GeminiEmbeddingFunction(EmbeddingFunction):
             ),
         )
         return [e.values for e in response.embeddings]
-    

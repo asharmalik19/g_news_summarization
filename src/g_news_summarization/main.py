@@ -15,48 +15,44 @@ so if the uvicorn is run from the project root, the paths are relative to the pr
 app = FastAPI(title="Google News Summary API")
 app.mount("/static", StaticFiles(directory="static", html=True), name="static")
 
+
 @app.get("/")
 async def read_index():
-    return FileResponse('static/index.html')
-    
+    return FileResponse("static/index.html")
+
+
 @app.get("/summaries")
 def read_summaries():
-    with sqlite3.connect('data/articles_data.db') as con:
+    with sqlite3.connect("data/articles_data.db") as con:
         con.row_factory = sqlite3.Row
         cur = con.cursor()
         rows = cur.execute("SELECT title, summary, url FROM article").fetchall()
         articles = []
         for row in rows:
             row = dict(row)
-            row['summary'] = json.loads(row['summary'])
+            row["summary"] = json.loads(row["summary"])
             articles.append(row)
-        return {'articles': articles}
-    
+        return {"articles": articles}
+
+
 @app.get("/summaries/{category}")
 def read_summaries_by_category(category):
-    with sqlite3.connect('data/articles_data.db') as con:
+    with sqlite3.connect("data/articles_data.db") as con:
         # Set the row factory to be able to convert rows to dictionaries
         con.row_factory = sqlite3.Row
         cur = con.cursor()
-        rows = cur.execute("SELECT title, summary, url FROM article WHERE Category = ?", (category, )).fetchall()
+        rows = cur.execute(
+            "SELECT title, summary, url FROM article WHERE Category = ?", (category,)
+        ).fetchall()
         articles = []
         for row in rows:
             row = dict(row)
-            row['summary'] = json.loads(row['summary'])
+            row["summary"] = json.loads(row["summary"])
             articles.append(row)
-        return {'articles': articles}
-    
+        return {"articles": articles}
+
+
 @app.get("/search")
 def rag_search(query):
     result = search(query)
     return result
-
-
-
-
-
-
-
-
-
-
