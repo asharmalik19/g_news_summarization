@@ -8,11 +8,15 @@ from .embedding_function import GeminiEmbeddingFunction
 from .downloader import find_project_root
 
 
-def search(query):
+def create_client():
     load_dotenv()
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
     client = genai.Client(api_key=GEMINI_API_KEY)
+    return client
 
+
+def search(query):
+    client = create_client()
     project_root = find_project_root()
     data_dir = os.path.join(project_root, "data")
     chroma_db_path = os.path.join(data_dir, "chroma_db")
@@ -23,7 +27,7 @@ def search(query):
     db = chroma_client.get_collection(name="my_db", embedding_function=embedding_fn)
 
     result = db.query(
-        query_texts=query, n_results=2, include=["documents", "metadatas"]
+        query_texts=query, n_results=3, include=["documents", "metadatas"]
     )
     retrieved_articles = result["documents"][0]
     articles_combined = ",".join(retrieved_articles)
@@ -32,9 +36,16 @@ def search(query):
 
     prompt = f"""
     You are an expert assistant. Based on the following user query and the related articles retrieved from a knowledge base, generate a clear and concise summary that directly answers the query.
+
+    Rules:
+    - Plain sentences, no leading bullets, dashes, asterisks, or numbering. 
+    - If the retrieved articles do not contain relevant information, respond with "No relevant information found."
+    - Do not fabricate information. Only use the information provided in the retrieved articles.
+
     Query: {query}
 
     Retrieved Articles: {articles_combined}
     """
     response = client.models.generate_content(model="gemma-3-27b-it", contents=prompt)
     return {"summary": response.text, "retrieved_urls": retrieved_urls}
+
